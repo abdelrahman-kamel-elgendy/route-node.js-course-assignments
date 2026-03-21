@@ -21,7 +21,7 @@ for (let i = 1; i <= 10; i++)
 
 // ==== Q4 ====
 input = [1, 2, 3, 4, 5];
-console.log(input.filter((num) => num % 2 === 0)); // [2, 4]
+console.log(input.filter(num => num % 2 === 0)); // [2, 4]
 
 
 // ==== Q5 ====
@@ -61,7 +61,7 @@ switch (input) {
 
 // ==== Q7 ====
 input = ["a", "ab", "abc"];
-console.log(input.map((str) => str.length)); // [1, 2, 3]
+console.log(input.map(str => str.length)); // [1, 2, 3]
 
 
 // ==== Q8 ====
@@ -77,7 +77,7 @@ console.log(divisibleBy3(input)); // "Divisible by both"
 
 // ==== Q9 ====
 input = 5;
-const square = (num) => num * num;
+const square = num => num * num;
 console.log(square(input)); // 25
 
 
@@ -103,19 +103,19 @@ delay().then((msg) => console.log(msg)); // "Success" (after 3 seconds)
 
 // ==== Q13 ====
 input = [1, 3, 7, 2, 4];
-const largest = (arr) => Math.max(...arr);
+const largest = arr => Math.max(...arr);
 console.log(largest(input)); // 7
 
 
 // ==== Q14 ====
 input = { name: "John", age: 30 };
-const keys = (obj) => Object.keys(obj);
+const keys = obj => Object.keys(obj);
 console.log(keys(input)); // ["name", "age"]
 
 
 // ==== Q15 ====
 input = "The quick brown fox";
-const split = (str) => str.split(" ");
+const split = str => str.split(" ");
 console.log(split(input)); // ["The", "quick", "brown", "fox"]
 
 
