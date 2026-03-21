@@ -116,7 +116,7 @@ const createFolderSync = (folderPath) => {
     return "Success";
 };
 
-Output = createFolderSync(path.join(__dirname, "new_folder"));
+Output = createFolderSync(path.join(__dirname, "new_folder_to_be_delete"));
 printCodingQuestion(11, "Write a function that creates a folder synchronously.", null, Output);
 // ===========================================================================================
 
@@ -139,7 +139,7 @@ printCodingQuestion(13, "Emit a custom \"login\" event with a username parameter
 // ===========================================================================================
 
 // 14. Read a file synchronously and log its contents.
-Input = "./notes.txt";
+Input = "./new_folder_to_be_delete/notes.txt";
 const notesPath = path.join(__dirname, Input);
 fs.writeFileSync(notesPath, "This is a note."); // create the file first
 
@@ -150,13 +150,13 @@ printCodingQuestion(14, "Read a file synchronously and log its contents.", Input
 // ===========================================================================================
 
 // 15. Write asynchronously to a file.
-const asyncFilePath = path.join(__dirname, "async.txt");
+const asyncFilePath = path.join(__dirname, "new_folder_to_be_delete/async.txt");
 
 const writeFileAsync = (filePath, content) => new Promise((resolve, reject) =>
     fs.writeFile(filePath, content, err =>
         err ? reject(err) : resolve(`Successfully wrote to ${path.basename(filePath)}`)));
 
-Input = { path: "./async.txt", content: "Async save" };
+Input = { path: "./new_folder_to_be_delete/async.txt", content: "Async save" };
 Output = await writeFileAsync(asyncFilePath, Input.content);
 printCodingQuestion(15, "Write asynchronously to a file.", Input, Output);
 // ===========================================================================================
