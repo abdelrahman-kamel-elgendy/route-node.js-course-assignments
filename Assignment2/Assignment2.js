@@ -1,196 +1,187 @@
+// ============================================================
+//  Assignment 2 – Node.js Core Modules
+//  Route Node.js Course
+// ============================================================
+
 import path from "path";
 import { fileURLToPath } from "url";
-
 import fs from "fs";
-
 import { EventEmitter } from "events";
-
 import os from "os";
+import { printCodingQuestion } from "../utils/print.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Coding Questions
 console.log("\n========== CODING QUESTIONS OUTPUT ==========\n");
-var Input; // used as an input for each question.
-var Output; // used as an output for each question.
-// ===========================================================================================
 
-// 1. Write a function that logs the current file path and directory.
-const currentFileInfo = () => ({ File: __filename, Dir: __dirname });
+let input;
+let output;
 
-Output = currentFileInfo();
-printCodingQuestion(1, "Write a function that logs the current file path and directory.", null, Output);
-// ===========================================================================================
+// ============================================================
+//  path Module  (Q1 – Q9)
+// ============================================================
 
-// 2. Write a function that takes a file path and returns its file name.
-const getFileName = (filePath) => path.basename(filePath);
+// == Q1. Current file path and directory ======================
+const q1 = () => ({ File: __filename, Dir: __dirname });
 
-Input = "/user/files/report.pdf ";
-Output = getFileName(Input);
-printCodingQuestion(2, "Write a function that takes a file path and returns its file name.", Input, Output);
-// ===========================================================================================
+output = q1();
+printCodingQuestion(1, "Write a function that logs the current file path and directory.", null, output);
 
-// 3. Write a function that builds a path from an object.
-const buildPath = (pathObj) => path.format(pathObj);
+// == Q2. File name from a path =================================
+const q2 = (filePath) => path.basename(filePath);
 
-Input = {
-    dir: "folder",
-    name: "app",
-    ext: ".js"
-};
-Output = buildPath(Input);
-printCodingQuestion(3, "Write a function that builds a path from an object.", Input, Output);
-// ===========================================================================================
+input = "/user/files/report.pdf";
+output = q2(input);
+printCodingQuestion(2, "Write a function that takes a file path and returns its file name.", input, output);
 
-// 4. Write a function that returns the file extension from a given file path.
-const getExtension = (filePath) => path.extname(filePath);
+// == Q3. Build a path from an object ==========================
+const q3 = (pathObj) => path.format(pathObj);
 
-Input = "/docs/readme.md";
-Output = getExtension(Input);
-printCodingQuestion(4, "Write a function that returns the file extension from a given file path.", Input, Output);
-// ===========================================================================================
+input = { dir: "/folder", name: "app", ext: ".js" };
+output = q3(input);
+printCodingQuestion(3, "Write a function that builds a path from an object.", input, output);
 
-// 5. Write a function that parses a given path and returns its name and ext.
-const parsePath = (filePath) => {
-    const parsed = path.parse(filePath);
-    return { Name: parsed.name, Ext: parsed.ext };
+// == Q4. File extension from a path ===========================
+const q4 = (filePath) => path.extname(filePath);
+
+input = "/docs/readme.md";
+output = q4(input);
+printCodingQuestion(4, "Write a function that returns the file extension from a given file path.", input, output);
+
+// == Q5. Parse path → name and ext ============================
+const q5 = (filePath) => {
+    const { name, ext } = path.parse(filePath);
+    return { Name: name, Ext: ext };
 };
 
-Input = "/home/app/main.js";
-Output = parsePath(Input);
-printCodingQuestion(5, "Write a function that parses a given path and returns its name and ext.", Input, Output);
-// ===========================================================================================
+input = "/home/app/main.js";
+output = q5(input);
+printCodingQuestion(5, "Write a function that parses a given path and returns its name and ext.", input, output);
 
-// 6. Write a function that checks whether a given path is absolute.
-const checkAbsolute = (filePath) => path.isAbsolute(filePath);
+// == Q6. Check if a path is absolute ==========================
+const q6 = (filePath) => path.isAbsolute(filePath);
 
-Input = "/home/user/file.txt";
-Output = checkAbsolute(Input);
-printCodingQuestion(6, "Write a function that checks whether a given path is absolute.", Input, Output);
-// ===========================================================================================
+input = "/home/user/file.txt";
+output = q6(input);
+printCodingQuestion(6, "Write a function that checks whether a given path is absolute.", input, output);
 
-// 7. Write a function that joins multiple segments.
-const joinSegments = (...segments) => path.join(...segments);
+// == Q7. Join multiple segments ================================
+const q7 = (...segments) => path.join(...segments);
 
-Input = ["src", "components", "App.js"];
-Output = joinSegments(...Input);
-printCodingQuestion(7, "Write a function that joins multiple segments.", Input, Output);
-// ===========================================================================================
+input = ["src", "components", "App.js"];
+output = q7(...input);
+printCodingQuestion(7, "Write a function that joins multiple segments.", input, output);
 
-// 8. Write a function that resolves a relative path to an absolute one.
-const resolvePath = (relativePath) => path.resolve(relativePath);
+// == Q8. Resolve a relative path to absolute ==================
+const q8 = (relativePath) => path.resolve(relativePath);
 
-Input = "./index.js";
-Output = resolvePath(Input);
-printCodingQuestion(8, "Write a function that resolves a relative path to an absolute one.", Input, Output);
-// ===========================================================================================
+input = "./index.js";
+output = q8(input);
+printCodingQuestion(8, "Write a function that resolves a relative path to an absolute one.", input, output);
 
-// 9. Write a function that joins two paths.
-const joinTwoPaths = (path1, path2) => path.join(path1, path2);
+// == Q9. Join two paths ========================================
+const q9 = (p1, p2) => path.join(p1, p2);
 
-let pathInput1 = "/folder1";
-let pathInput2 = "folder2/file.txt";
-Output = joinTwoPaths(pathInput1, pathInput2);
-printCodingQuestion(9, "Write a function that joins two paths.", Input = { pathInput1, pathInput2 }, Output);
-// ===========================================================================================
+const pathInput1 = "/folder1";
+const pathInput2 = "folder2/file.txt";
+output = q9(pathInput1, pathInput2);
+printCodingQuestion(9, "Write a function that joins two paths.", { pathInput1, pathInput2 }, output);
 
-// 10. Write a function that deletes a file asynchronously.
+// ============================================================
+//  fs Module  (Q10, Q11, Q14 – Q16)
+// ============================================================
+
+// == Q10. Delete a file asynchronously ========================
+const q10 = (filePath) =>
+    new Promise((resolve, reject) =>
+        fs.unlink(filePath, (err) =>
+            err ? reject(err) : resolve(`The ${path.basename(filePath)} is deleted.`)
+        )
+    );
+
 const tempFilePath = path.join(__dirname, "temp_delete_me.txt");
-fs.writeFileSync(tempFilePath, "temporary file"); // create the file first so we can delete it
+fs.writeFileSync(tempFilePath, "temporary file");
 
-const deleteFileAsync = (filePath) => new Promise(
-    (resolve, reject) =>
-        fs.unlink(filePath, err =>
-            err ? reject(err) : resolve(`The ${path.basename(filePath)} is deleted.`)));
+try {
+    input = tempFilePath;
+    output = await q10(input);
+    printCodingQuestion(10, "Write a function that deletes a file asynchronously.", input, output);
+} catch (err) {
+    console.error("Q10 error:", err.message);
+}
 
-Input = tempFilePath;
-Output = await deleteFileAsync(Input);
-printCodingQuestion(10, "Write a function that deletes a file asynchronously.", Input, Output);
-// ===========================================================================================
-
-// 11. Write a function that creates a folder synchronously.
-const createFolderSync = (folderPath) => {
-    if (!fs.existsSync(folderPath))
-        fs.mkdirSync(folderPath);
+// == Q11. Create a folder synchronously =======================
+const q11 = (folderPath) => {
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
     return "Success";
 };
 
-Output = createFolderSync(path.join(__dirname, "new_folder_to_be_delete"));
-printCodingQuestion(11, "Write a function that creates a folder synchronously.", null, Output);
-// ===========================================================================================
+output = q11(path.join(__dirname, "new_folder"));
+printCodingQuestion(11, "Write a function that creates a folder synchronously.", null, output);
 
-// 12. Create an event emitter that listens for a "start" event and logs a welcome message.
+// ============================================================
+//  events Module  (Q12 – Q13)
+// ============================================================
+
+// == Q12. Listen for a "start" event ==========================
 const emitter = new EventEmitter();
 
-emitter.on("start", () => Output = "Welcome event triggered!");
+emitter.on("start", () => { output = "Welcome event triggered!"; });
 emitter.emit("start");
+printCodingQuestion(12, 'Create an event emitter that listens for a "start" event and logs a welcome message.', null, output);
 
-printCodingQuestion(12, "Create an event emitter that listens for a \"start\" event and logs a welcome message.", null, Output);
-// ===========================================================================================
+// == Q13. Emit a "login" event with a username =================
+emitter.on("login", (username) => { output = `User logged in: ${username}`; });
 
-// 13. Emit a custom "login" event with a username parameter.
-emitter.on("login", (username) => Output = `User logged in: ${username}`);
-Input = "abdelrahman";
+input = "abdelrahman";
+emitter.emit("login", input);
+printCodingQuestion(13, 'Emit a custom "login" event with a username parameter.', input, output);
 
-emitter.emit("login", Input);
+// ============================================================
+//  fs Module (continued)
+// ============================================================
 
-printCodingQuestion(13, "Emit a custom \"login\" event with a username parameter.", Input, Output);
-// ===========================================================================================
+// == Q14. Read a file synchronously ===========================
+const q14 = (filePath) => fs.readFileSync(filePath, "utf-8");
 
-// 14. Read a file synchronously and log its contents.
-Input = "./new_folder_to_be_delete/notes.txt";
-const notesPath = path.join(__dirname, Input);
-fs.writeFileSync(notesPath, "This is a note."); // create the file first
+const notesPath = path.join(__dirname, "notes.txt");
+fs.writeFileSync(notesPath, "This is a note.");
 
-const readFileSync = (filePath) => fs.readFileSync(filePath, "utf-8");
+input = "./notes.txt";
+output = q14(notesPath);
+printCodingQuestion(14, "Read a file synchronously and log its contents.", input, output);
 
-Output = readFileSync(notesPath);
-printCodingQuestion(14, "Read a file synchronously and log its contents.", Input, Output);
-// ===========================================================================================
+// == Q15. Write to a file asynchronously ======================
+const q15 = (filePath, content) =>
+    new Promise((resolve, reject) =>
+        fs.writeFile(filePath, content, (err) =>
+            err ? reject(err) : resolve(`Successfully wrote to ${path.basename(filePath)}`)
+        )
+    );
 
-// 15. Write asynchronously to a file.
-const asyncFilePath = path.join(__dirname, "new_folder_to_be_delete/async.txt");
-
-const writeFileAsync = (filePath, content) => new Promise((resolve, reject) =>
-    fs.writeFile(filePath, content, err =>
-        err ? reject(err) : resolve(`Successfully wrote to ${path.basename(filePath)}`)));
-
-Input = { path: "./new_folder_to_be_delete/async.txt", content: "Async save" };
-Output = await writeFileAsync(asyncFilePath, Input.content);
-printCodingQuestion(15, "Write asynchronously to a file.", Input, Output);
-// ===========================================================================================
-
-// 16. Check if a directory exists.
-const checkExists = (targetPath) => fs.existsSync(targetPath);
-Input = "./notes.txt";
-Output = checkExists(notesPath);
-printCodingQuestion(16, "Check if a directory exists.", Input, Output);
-// ===========================================================================================
-
-// 17. Write a function that returns the OS platform and CPU architecture.
-const getOSInfo = () => ({ Platform: os.platform(), Arch: os.arch() });
-
-Output = getOSInfo();
-printCodingQuestion(17, "Write a function that returns the OS platform and CPU architecture.", null, Output);
-// ===========================================================================================
-
-
-
-
-// function to print coding questions
-function printCodingQuestion(questionNumber, description, Input, Output) {
-
-    console.log(`Question ${questionNumber}`);
-    console.log("Description:", description);
-
-    // Format input properly
-    if (Input === null || Input === undefined)
-        console.log("{ Input: No input }");
-
-    else
-        console.log({ Input });
-
-    console.log({ Output });
-    console.log("---------------------------------------------\n");
+try {
+    const asyncFilePath = path.join(__dirname, "async.txt");
+    input = { path: "./async.txt", content: "Async save" };
+    output = await q15(asyncFilePath, input.content);
+    printCodingQuestion(15, "Write asynchronously to a file.", input, output);
+} catch (err) {
+    console.error("Q15 error:", err.message);
 }
+
+// == Q16. Check if a path exists ==============================
+const q16 = (targetPath) => fs.existsSync(targetPath);
+
+input = "./notes.txt";
+output = q16(notesPath);
+printCodingQuestion(16, "Check if a directory exists.", input, output);
+
+// ============================================================
+//  os Module  (Q17)
+// ============================================================
+
+// == Q17. OS platform and CPU architecture ====================
+const q17 = () => ({ Platform: os.platform(), Arch: os.arch() });
+
+output = q17();
+printCodingQuestion(17, "Write a function that returns the OS platform and CPU architecture.", null, output);
