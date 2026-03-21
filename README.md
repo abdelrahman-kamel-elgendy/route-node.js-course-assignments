@@ -58,7 +58,8 @@ Each assignment lives in its own folder and contains two files: the main solutio
 | 5 | Type Conversion vs Type Coercion |
 
 ### Bonus – `Assignment1/bonus.js`
-> Bonus task for Assignment 1.
+
+**LeetCode Problem:** [Counter II](https://leetcode.com/problems/counter-ii)
 
 ---
 
@@ -92,8 +93,6 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 **LeetCode Problem:** [Kth Missing Positive Number](https://leetcode.com/problems/kth-missing-positive-number/)
 
-> Given a sorted array of positive integers and an integer `k`, return the `k`-th missing positive integer.
-
 ---
 
 ## 🚀 How to Run
@@ -102,10 +101,10 @@ Make sure you have [Node.js](https://nodejs.org/) installed, then:
 
 ```bash
 # Run Assignment 1
-node Assignment1/assignment1.js
+node assignment1/assignment1.js
 
 # Run Assignment 2
-node Assignment2/assignment2.js
+node assignment2/assignment2.js
 ```
 
 ---

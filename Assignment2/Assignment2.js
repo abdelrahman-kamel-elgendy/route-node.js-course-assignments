@@ -65,18 +65,6 @@ const joinTwoPaths = (p1, p2) => path.join(p1, p2);
 console.log(joinTwoPaths(path1, path2)); // "/folder1/folder2/file.txt"
 
 
-// ==== Q15 ====
-const createOrWriteFileAsync = (filePath, data) => {
-    try {
-        fs.writeFileSync(filePath, data);
-        console.log(`The ${path.basename(filePath)} is created.`); // "The to_be_deleted.txt is created.
-    } catch (err) {
-        console.error(`Error creating file: ${err.message}`);
-    }
-}
-createOrWriteFileAsync("./folder/notes.txt", "Async save"); // "File written successfully to folder/notes.txt"
-
-
 // ==== Q10 ====
 input = "to_be_deleted.txt";
 const deleteFileAsync = filePath => {
@@ -87,7 +75,6 @@ const deleteFileAsync = filePath => {
         console.error(`Error deleting file: ${err.message}`);
     }
 }
-createOrWriteFileAsync(input, "This file must have been deleted!");
 deleteFileAsync(input);
 
 
@@ -117,7 +104,7 @@ emitter.emit("login", input); // "User logged in: Abdelrahman"
 
 
 // ==== Q14 ====
-input = "./folder/notes.txt";
+input = "./notes.txt";
 const readFileSync = filePath => {
     try {
         const content = fs.readFileSync(filePath, "utf-8");
@@ -126,8 +113,19 @@ const readFileSync = filePath => {
         console.error(`Error reading file: ${err.message}`);
     }
 }
-createOrWriteFileAsync(input, "Delete this folder to to free up storage space!");
-readFileSync(input); //the file content => "Delete this folder to to free up storage space!"
+readFileSync(input); //the file content => "notes file to be read in assignment."
+
+
+// ==== Q15 ====
+const createOrWriteFileAsync = (filePath, data) => {
+    try {
+        fs.writeFileSync(filePath, data);
+        console.log(`The ${path.basename(filePath)} is created.`); // "The to_be_deleted.txt is created.
+    } catch (err) {
+        console.error(`Error creating file: ${err.message}`);
+    }
+}
+createOrWriteFileAsync("./folder/async.txt", "Async save"); // "File written successfully to async.txt"
 
 
 // ==== 16 ====
