@@ -9,15 +9,28 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ```
 ├── Assignment1/
-│   ├── assignment1.js   ← Coding questions + essay answers
-│   ├── assignment1.pdf  ← Assignment 1 questions 
-│   └── bonus.js         ← Bonus task
+│   ├── assignment1.js          ← Coding questions + essay answers
+│   ├── assignment1.pdf         ← Assignment 1 questions
+│   └── bonus.js                ← Bonus task
 │
 ├── Assignment2/
-│   ├── assignment2.js   ← Node.js built-in modules questions
-│   ├── assignment2.pdf  ← Assignment 2 questions
-│   └── bonus.js         ← LeetCode: Kth Missing Positive Number
+│   ├── assignment2.js          ← Node.js built-in modules questions
+│   ├── assignment2.pdf         ← Assignment 2 questions
+│   ├── bouns.js                ← LeetCode: Kth Missing Positive Number
+│   ├── notes.txt               ← Sample file used in Q14 (readFileSync)
+│   └── to_be_deleted.txt       ← Sample file used in Q10 (unlink)
 │
+├── Assignment3/
+│   ├── assignment3.js          ← Streams + HTTP CRUD + Node Internals essays
+│   ├── assignment3.pdf         ← Assignment 3 questions
+│   ├── Assignment3-part2.postman_collection.json  ← Postman collection for API testing
+│   ├── bouns.js                ← LeetCode: Majority Element
+│   ├── big.txt                 ← Sample file used in streams questions
+│   ├── dest.txt                ← Output file from stream copy (Q2)
+│   ├── data.txt.gz             ← Compressed output from pipeline (Q3)
+│   └── users.json              ← JSON file database for HTTP CRUD API
+│
+├── .gitignore
 └── README.md
 ```
 
@@ -89,9 +102,70 @@ Each assignment lives in its own folder and contains two files: the main solutio
 | 16 | Check if a path exists | `fs` | `fs.existsSync()` |
 | 17 | Get OS platform & CPU architecture | `os` | `os.platform()`, `os.arch()` |
 
-### Bonus – `Assignment2/bonus.js`
+### Bonus – `Assignment2/bouns.js`
 
 **LeetCode Problem:** [Kth Missing Positive Number](https://leetcode.com/problems/kth-missing-positive-number/)
+
+---
+
+## 📝 Assignment 3 – Streams, HTTP & Node Internals
+
+**File:** `Assignment3/assignment3.js`
+
+### Part 1 – Core Modules: Streams
+
+| # | Description | Module | Method |
+|---|-------------|--------|--------|
+| 1 | Read `big.txt` in chunks and log each | `fs` | `createReadStream()` |
+| 2 | Copy file → output saved to `dest.txt` | `fs` | `createReadStream()` + `createWriteStream()` + `.pipe()` |
+| 3 | Read → compress → write `data.txt.gz` | `fs`, `zlib`, `stream` | `createGzip()` + `pipeline()` |
+
+### Part 2 – HTTP CRUD API
+
+**Database:** `Assignment3/users.json` (data persisted to file — no in-memory arrays)  
+**Postman Collection:** `Assignment3/Assignment3-part2.postman_collection.json`
+
+| # | Method | URL | Description |
+|---|--------|-----|-------------|
+| 1 | `POST` | `/user` | Add a new user (checks for duplicate email) |
+| 2 | `PATCH` | `/user/:id` | Update user name, age, or email by ID |
+| 3 | `DELETE` | `/user/:id` | Delete a user by ID |
+| 4 | `GET` | `/user` | Get all users |
+| 5 | `GET` | `/user/:id` | Get a single user by ID |
+
+**Response examples:**
+
+```json
+// POST /user – success
+{ "message": "User added successfully." }
+
+// POST /user – duplicate email
+{ "message": "Email already exists." }
+
+// PATCH /user/99 – not found
+{ "message": "User ID not found." }
+
+// DELETE /user/1 – success
+{ "message": "User deleted successfully." }
+
+// GET /user/:id – not found
+{ "message": "User not found." }
+```
+
+### Part 3 – Node Internals (Essays)
+
+| # | Topic |
+|---|-------|
+| 1 | What is the Node.js Event Loop? |
+| 2 | What is Libuv and its role in Node.js? |
+| 3 | How Node.js handles async operations under the hood |
+| 4 | Difference between Call Stack, Event Queue, and Event Loop |
+| 5 | Node.js Thread Pool and how to set its size (`UV_THREADPOOL_SIZE`) |
+| 6 | How Node.js handles blocking vs non-blocking code |
+
+### Bonus – `Assignment3/bouns.js`
+
+**LeetCode Problem:** [Majority Element](https://leetcode.com/problems/majority-element/)
 
 ---
 
@@ -101,10 +175,36 @@ Make sure you have [Node.js](https://nodejs.org/) installed, then:
 
 ```bash
 # Run Assignment 1
-node assignment1/assignment1.js
+node Assignment1/assignment1.js
 
 # Run Assignment 2
-node assignment2/assignment2.js
+node Assignment2/assignment2.js
+
+# Run Assignment 3 – HTTP Server (then test with Postman or curl)
+node Assignment3/assignment3.js
+```
+
+**Test the API with curl or import the Postman collection:**
+
+```bash
+# Add a user
+curl -X POST http://localhost:3000/user \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Ahmed","age":27,"email":"ahmed@email.com"}'
+
+# Get all users
+curl http://localhost:3000/user
+
+# Get user by ID
+curl http://localhost:3000/user/1
+
+# Update user
+curl -X PATCH http://localhost:3000/user/1 \
+  -H "Content-Type: application/json" \
+  -d '{"age":30}'
+
+# Delete user
+curl -X DELETE http://localhost:3000/user/1
 ```
 
 ---
@@ -113,4 +213,4 @@ node assignment2/assignment2.js
 
 - **Runtime:** Node.js
 - **Language:** JavaScript (ES6+)
-- **Modules:** `path` · `fs` · `events` · `os`
+- **Modules:** `path` · `fs` · `events` · `os` · `http` · `stream` · `zlib`
