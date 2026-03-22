@@ -9,26 +9,24 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ```
 ├── Assignment1/
-│   ├── assignment1.js          ← Coding questions + essay answers
-│   ├── assignment1.pdf         ← Assignment 1 questions
-│   └── bonus.js                ← Bonus task
-│
-├── Assignment2/
-│   ├── assignment2.js          ← Node.js built-in modules questions
-│   ├── assignment2.pdf         ← Assignment 2 questions
-│   ├── bouns.js                ← LeetCode: Kth Missing Positive Number
-│   ├── notes.txt               ← Sample file used in Q14 (readFileSync)
-│   └── to_be_deleted.txt       ← Sample file used in Q10 (unlink)
-│
-├── Assignment3/
-│   ├── assignment3.js          ← Streams + HTTP CRUD + Node Internals essays
-│   ├── assignment3.pdf         ← Assignment 3 questions
+│   ├── assignment1.js                             ← Coding questions + essay answers
+│   ├── assignment1.pdf                            ← Assignment 1 questions
+│   └── bonus.js                                   ← Bonus task
+│                  
+├── Assignment2/                   
+│   ├── assignment2.js                             ← Node.js built-in modules questions
+│   ├── assignment2.pdf                            ← Assignment 2 questions
+│   ├── bouns.js                                   ← LeetCode: Kth Missing Positive Number
+│   ├── notes.txt                                  ← Sample file used in Q14 (readFileSync)
+│   └── to_be_deleted.txt                          ← Sample file used in Q10 (unlink)
+│                  
+├── Assignment3/                   
+│   ├── assignment3.js                             ← Streams + HTTP CRUD + Node Internals essays
+│   ├── assignment3.pdf                            ← Assignment 3 questions
 │   ├── Assignment3-part2.postman_collection.json  ← Postman collection for API testing
-│   ├── bouns.js                ← LeetCode: Majority Element
-│   ├── big.txt                 ← Sample file used in streams questions
-│   ├── dest.txt                ← Output file from stream copy (Q2)
-│   ├── data.txt.gz             ← Compressed output from pipeline (Q3)
-│   └── users.json              ← JSON file database for HTTP CRUD API
+│   ├── bouns.js                                   ← LeetCode: Majority Element
+│   ├── big.txt                                    ← Sample file used in streams questions
+│   └── users.json                                 ← JSON file database for HTTP CRUD API
 │
 ├── .gitignore
 └── README.md
