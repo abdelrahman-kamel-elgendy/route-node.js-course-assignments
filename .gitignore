@@ -1,3 +1,6 @@
 async.txt
 dest.txt
 data.txt.gz
+
+node_modules
+package-lock.json

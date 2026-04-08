@@ -69,7 +69,7 @@ console.log(joinTwoPaths(path1, path2)); // "/folder1/folder2/file.txt"
 input = "to_be_deleted.txt";
 const deleteFileAsync = filePath => {
     try {
-        fs.unlinkSync(filePath);
+        fs.unlinkASync(filePath);
         console.log(`The ${path.basename(filePath)} is deleted.`); // "The to_be_deleted.txt is deleted."
     } catch (err) {
         console.error(`Error deleting file: ${err.message}`);

@@ -9,24 +9,33 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ```
 ├── Assignment1/
-│   ├── assignment1.js                             ← Coding questions + essay answers
-│   ├── assignment1.pdf                            ← Assignment 1 questions
-│   └── bonus.js                                   ← Bonus task
-│                  
-├── Assignment2/                   
-│   ├── assignment2.js                             ← Node.js built-in modules questions
-│   ├── assignment2.pdf                            ← Assignment 2 questions
-│   ├── bouns.js                                   ← LeetCode: Kth Missing Positive Number
-│   ├── notes.txt                                  ← Sample file used in Q14 (readFileSync)
-│   └── to_be_deleted.txt                          ← Sample file used in Q10 (unlink)
-│                  
-├── Assignment3/                   
-│   ├── assignment3.js                             ← Streams + HTTP CRUD + Node Internals essays
-│   ├── assignment3.pdf                            ← Assignment 3 questions
+│   ├── assignment1.js          ← Coding questions + essay answers
+│   ├── assignment1.pdf         ← Assignment 1 questions
+│   └── bonus.js                ← LeetCode: Counter II
+│
+├── Assignment2/
+│   ├── assignment2.js          ← Node.js built-in modules questions
+│   ├── assignment2.pdf         ← Assignment 2 questions
+│   ├── bouns.js                ← LeetCode: Kth Missing Positive Number
+│   ├── notes.txt               ← Sample file used in Q14 (readFileSync)
+│   └── to_be_deleted.txt       ← Sample file used in Q10 (unlink)
+│
+├── Assignment3/
+│   ├── assignment3.js          ← Streams + HTTP CRUD + Node Internals essays
+│   ├── assignment3.pdf         ← Assignment 3 questions
 │   ├── Assignment3-part2.postman_collection.json  ← Postman collection for API testing
-│   ├── bouns.js                                   ← LeetCode: Majority Element
-│   ├── big.txt                                    ← Sample file used in streams questions
-│   └── users.json                                 ← JSON file database for HTTP CRUD API
+│   ├── bouns.js                ← LeetCode: Majority Element
+│   ├── big.txt                 ← Sample file used in streams questions
+│   ├── dest.txt                ← Output file from stream copy (Q2)
+│   ├── data.txt.gz             ← Compressed output from pipeline (Q3)
+│   └── users.json              ← JSON file database for HTTP CRUD API
+│
+├── Assignment4/
+│   ├── assignment4.js          ← Express.js CRUD API
+│   ├── assignment4.pdf         ← Assignment 4 questions
+│   ├── Assignment4.postman_collection.json  ← Postman collection for API testing
+│   ├── bouns.js                ← LeetCode: Longest Common Prefix
+│   └── users.json              ← JSON file database for Express CRUD API
 │
 ├── .gitignore
 └── README.md
@@ -131,25 +140,6 @@ Each assignment lives in its own folder and contains two files: the main solutio
 | 4 | `GET` | `/user` | Get all users |
 | 5 | `GET` | `/user/:id` | Get a single user by ID |
 
-**Response examples:**
-
-```json
-// POST /user – success
-{ "message": "User added successfully." }
-
-// POST /user – duplicate email
-{ "message": "Email already exists." }
-
-// PATCH /user/99 – not found
-{ "message": "User ID not found." }
-
-// DELETE /user/1 – success
-{ "message": "User deleted successfully." }
-
-// GET /user/:id – not found
-{ "message": "User not found." }
-```
-
 ### Part 3 – Node Internals (Essays)
 
 | # | Topic |
@@ -167,9 +157,82 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ---
 
+## 📝 Assignment 4 – Express.js CRUD & ERD Design
+
+**File:** `Assignment4/assignment4.js`  
+**Database:** `Assignment4/users.json` (data persisted to file — no in-memory arrays)  
+**Postman Collection:** `Assignment4/Assignment4.postman_collection.json`
+
+### Part 1 – Express.js CRUD API (7 Endpoints)
+
+| # | Method | URL | Description |
+|---|--------|-----|-------------|
+| 1 | `POST` | `/user` | Add a new user (checks for duplicate email) |
+| 2 | `PATCH` | `/user/:id` | Update user name, age, or email by ID |
+| 3 | `DELETE` | `/user/:id` | Delete a user by ID (also accepts ID from body) |
+| 4 | `GET` | `/user/getByName?name=ali` | Get a user by name (query parameter) |
+| 5 | `GET` | `/user` | Get all users |
+| 6 | `GET` | `/user/filter?minAge=25` | Filter users by minimum age |
+| 7 | `GET` | `/user/:id` | Get a user by ID |
+
+**Response examples:**
+
+```json
+// POST /user – success
+{ "message": "User added successfully." }
+
+// POST /user – duplicate email
+{ "message": "Email already exists." }
+
+// PATCH /user/99 – not found
+{ "message": "User ID not found." }
+
+// DELETE /user/1 – success
+{ "message": "User deleted successfully." }
+
+// GET /user/getByName?name=ali – success
+{ "id": 1, "name": "ali", "age": 27, "email": "user@email.com" }
+
+// GET /user/getByName?name=test – not found
+{ "message": "User name not found." }
+
+// GET /user/filter?minAge=50 – no results
+{ "message": "no user found" }
+```
+
+### Part 2 – ERD Diagram (Musicana Records)
+
+**Entities and their attributes:**
+
+| Entity | Attributes |
+|--------|-----------|
+| `MUSICIAN` | `musician_id` (PK), `name`, `street`, `city`, `phone` |
+| `INSTRUMENT` | `instrument_id` (PK), `name`, `musical_key` |
+| `ALBUM` | `album_id` (PK), `title`, `copyright_date`, `producer_id` (FK) |
+| `SONG` | `song_id` (PK), `title`, `author`, `album_id` (FK) |
+| `MUSICIAN_INSTRUMENT` | `musician_id` (FK), `instrument_id` (FK) — junction table |
+| `MUSICIAN_SONG` | `musician_id` (FK), `song_id` (FK) — junction table |
+
+**Relationships:**
+
+| Relationship | Cardinality | Description |
+|---|---|---|
+| Musician ↔ Instrument | Many-to-Many | A musician plays many instruments; an instrument is played by many musicians |
+| Musician ↔ Song | Many-to-Many | A musician performs many songs; a song is performed by many musicians |
+| Album → Song | One-to-Many | An album contains many songs; a song belongs to exactly one album |
+| Musician → Album | One-to-Many | A musician (producer) may produce many albums; each album has exactly one producer |
+
+### Bonus – `Assignment4/bouns.js`
+
+**LeetCode Problem:** [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/)
+
+> Write a function to find the longest common prefix string amongst an array of strings.
+
+---
+
 ## 🚀 How to Run
 
-Make sure you have [Node.js](https://nodejs.org/) installed, then:
+Make sure you have [Node.js](https://nodejs.org/) installed.
 
 ```bash
 # Run Assignment 1
@@ -178,11 +241,16 @@ node Assignment1/assignment1.js
 # Run Assignment 2
 node Assignment2/assignment2.js
 
-# Run Assignment 3 – HTTP Server (then test with Postman or curl)
+# Run Assignment 3 – HTTP Server
 node Assignment3/assignment3.js
+
+# Run Assignment 4 – Express Server  (install express first)
+cd Assignment4
+npm install express
+node assignment4.js
 ```
 
-**Test the API with curl or import the Postman collection:**
+**Test the Assignment 4 API with curl or import the Postman collection:**
 
 ```bash
 # Add a user
@@ -192,6 +260,12 @@ curl -X POST http://localhost:3000/user \
 
 # Get all users
 curl http://localhost:3000/user
+
+# Get user by name
+curl "http://localhost:3000/user/getByName?name=Ahmed"
+
+# Filter by minimum age
+curl "http://localhost:3000/user/filter?minAge=25"
 
 # Get user by ID
 curl http://localhost:3000/user/1
@@ -211,4 +285,5 @@ curl -X DELETE http://localhost:3000/user/1
 
 - **Runtime:** Node.js
 - **Language:** JavaScript (ES6+)
+- **Framework:** Express.js (Assignment 4)
 - **Modules:** `path` · `fs` · `events` · `os` · `http` · `stream` · `zlib`
