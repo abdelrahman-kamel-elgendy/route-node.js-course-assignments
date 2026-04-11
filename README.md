@@ -32,10 +32,15 @@ Each assignment lives in its own folder and contains two files: the main solutio
 │
 ├── Assignment4/
 │   ├── assignment4.js          ← Express.js CRUD API
-│   ├── assignment4.pdf         ← Assignment 4 questions
+│   ├── musicana_erd.pdf         ← Assignment 4 questions
 │   ├── Assignment4.postman_collection.json  ← Postman collection for API testing
 │   ├── bouns.js                ← LeetCode: Longest Common Prefix
 │   └── users.json              ← JSON file database for Express CRUD API
+│
+├── Assignment5/
+│   ├── assignment5.pdf         ← Assignment 5 questions
+│   ├── musicana_erd.pdf        ← Part 1: Musicana Records ERD diagram
+│   └── user_product_schema.pdf ← Part 2: User–Product schema mapping
 │
 ├── .gitignore
 └── README.md
@@ -175,34 +180,9 @@ Each assignment lives in its own folder and contains two files: the main solutio
 | 6 | `GET` | `/user/filter?minAge=25` | Filter users by minimum age |
 | 7 | `GET` | `/user/:id` | Get a user by ID |
 
-**Response examples:**
-
-```json
-// POST /user – success
-{ "message": "User added successfully." }
-
-// POST /user – duplicate email
-{ "message": "Email already exists." }
-
-// PATCH /user/99 – not found
-{ "message": "User ID not found." }
-
-// DELETE /user/1 – success
-{ "message": "User deleted successfully." }
-
-// GET /user/getByName?name=ali – success
-{ "id": 1, "name": "ali", "age": 27, "email": "user@email.com" }
-
-// GET /user/getByName?name=test – not found
-{ "message": "User name not found." }
-
-// GET /user/filter?minAge=50 – no results
-{ "message": "no user found" }
-```
-
 ### Part 2 – ERD Diagram (Musicana Records)
 
-**Entities and their attributes:**
+**Entities:**
 
 | Entity | Attributes |
 |--------|-----------|
@@ -210,23 +190,87 @@ Each assignment lives in its own folder and contains two files: the main solutio
 | `INSTRUMENT` | `instrument_id` (PK), `name`, `musical_key` |
 | `ALBUM` | `album_id` (PK), `title`, `copyright_date`, `producer_id` (FK) |
 | `SONG` | `song_id` (PK), `title`, `author`, `album_id` (FK) |
-| `MUSICIAN_INSTRUMENT` | `musician_id` (FK), `instrument_id` (FK) — junction table |
-| `MUSICIAN_SONG` | `musician_id` (FK), `song_id` (FK) — junction table |
+| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) — junction table |
+| `PERFORMS` | `musician_id` (FK), `song_id` (FK) — junction table |
 
 **Relationships:**
 
-| Relationship | Cardinality | Description |
-|---|---|---|
-| Musician ↔ Instrument | Many-to-Many | A musician plays many instruments; an instrument is played by many musicians |
-| Musician ↔ Song | Many-to-Many | A musician performs many songs; a song is performed by many musicians |
-| Album → Song | One-to-Many | An album contains many songs; a song belongs to exactly one album |
-| Musician → Album | One-to-Many | A musician (producer) may produce many albums; each album has exactly one producer |
+| Relationship | Cardinality |
+|---|---|
+| Musician ↔ Instrument | Many-to-Many (via `PLAYS`) |
+| Musician ↔ Song | Many-to-Many (via `PERFORMS`) |
+| Album → Song | One-to-Many |
+| Musician → Album | One-to-Many (producer) |
 
 ### Bonus – `Assignment4/bouns.js`
 
 **LeetCode Problem:** [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/)
 
-> Write a function to find the longest common prefix string amongst an array of strings.
+---
+
+## 📝 Assignment 5 – ERD & Schema Mapping
+
+### Part 1 – Musicana Records ERD
+
+Same Musicana Records requirements as Assignment 4 Part 2.
+
+**Entities and relationships:**
+
+| Entity | Attributes |
+|--------|-----------|
+| `MUSICIAN` | `musician_id` (PK), `name`, `street`, `city`, `phone` |
+| `INSTRUMENT` | `instrument_id` (PK), `name`, `musical_key` |
+| `ALBUM` | `album_id` (PK), `title`, `copyright_date`, `producer_id` (FK → MUSICIAN) |
+| `SONG` | `song_id` (PK), `title`, `author`, `album_id` (FK → ALBUM) |
+| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) — junction table (M:N) |
+| `PERFORMS` | `musician_id` (FK), `song_id` (FK) — junction table (M:N) |
+
+| Relationship | Cardinality | Rule |
+|---|---|---|
+| Musician ↔ Instrument | Many-to-Many | A musician plays many instruments; an instrument is played by many musicians |
+| Musician ↔ Song | Many-to-Many | A song is performed by one or more musicians; a musician may perform many songs |
+| Album → Song | One-to-Many | An album has many songs; a song belongs to exactly one album |
+| Musician → Album | One-to-Many | A producer produces many albums; each album has exactly one producer |
+
+---
+
+### Part 2 – Schema Mapping (User → Own → Product)
+
+**ERD:** One User owns many Products (1:N relationship — FK lives on the Product side)
+
+#### Relational Schema
+
+```sql
+USER (
+  id        INT          PRIMARY KEY,
+  firstName VARCHAR(50)  NOT NULL,
+  lastName  VARCHAR(50)  NOT NULL,
+  userName  VARCHAR(50)  NOT NULL UNIQUE,
+  email     VARCHAR(100) NOT NULL UNIQUE,
+  phone     VARCHAR(20),
+  role      VARCHAR(20)  NOT NULL,
+  password  VARCHAR(255) NOT NULL
+);
+
+PRODUCT (
+  id        INT            PRIMARY KEY,
+  name      VARCHAR(100)   NOT NULL,
+  stock     INT            NOT NULL DEFAULT 0,
+  price     DECIMAL(10, 2) NOT NULL,
+  isDeleted BOOLEAN        NOT NULL DEFAULT FALSE,
+  user_id   INT            NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES USER(id)
+);
+```
+
+**Mapping decisions:**
+
+| Decision | Reason |
+|---|---|
+| FK `user_id` placed in `PRODUCT` | The relationship is 1:N — the "many" side (Product) holds the FK |
+| `userName` and `email` are `UNIQUE` | They were underlined in the original ERD (candidate keys) |
+| `isDeleted` defaults to `FALSE` | Soft-delete pattern — records are flagged, not physically removed |
+| No junction table needed | 1:N relationships map directly with a FK, no extra table required |
 
 ---
 
@@ -244,38 +288,24 @@ node Assignment2/assignment2.js
 # Run Assignment 3 – HTTP Server
 node Assignment3/assignment3.js
 
-# Run Assignment 4 – Express Server  (install express first)
-cd Assignment4
-npm install express
-node assignment4.js
+# Run Assignment 4 – Express Server
+cd Assignment4 && npm i && node assignment4.js
 ```
 
-**Test the Assignment 4 API with curl or import the Postman collection:**
+**Test the Assignment 4 API with curl:**
 
 ```bash
-# Add a user
 curl -X POST http://localhost:3000/user \
   -H "Content-Type: application/json" \
   -d '{"name":"Ahmed","age":27,"email":"ahmed@email.com"}'
 
-# Get all users
 curl http://localhost:3000/user
-
-# Get user by name
 curl "http://localhost:3000/user/getByName?name=Ahmed"
-
-# Filter by minimum age
 curl "http://localhost:3000/user/filter?minAge=25"
-
-# Get user by ID
 curl http://localhost:3000/user/1
-
-# Update user
 curl -X PATCH http://localhost:3000/user/1 \
   -H "Content-Type: application/json" \
   -d '{"age":30}'
-
-# Delete user
 curl -X DELETE http://localhost:3000/user/1
 ```
 
@@ -286,4 +316,5 @@ curl -X DELETE http://localhost:3000/user/1
 - **Runtime:** Node.js
 - **Language:** JavaScript (ES6+)
 - **Framework:** Express.js (Assignment 4)
+- **Database design:** ERD + Relational Schema (Assignment 5)
 - **Modules:** `path` · `fs` · `events` · `os` · `http` · `stream` · `zlib`
