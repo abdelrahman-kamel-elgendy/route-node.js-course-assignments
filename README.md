@@ -32,15 +32,22 @@ Each assignment lives in its own folder and contains two files: the main solutio
 │
 ├── Assignment4/
 │   ├── assignment4.js          ← Express.js CRUD API
-│   ├── musicana_erd.pdf         ← Assignment 4 questions
+│   ├── assignment4.pdf         ← Assignment 4 questions
 │   ├── Assignment4.postman_collection.json  ← Postman collection for API testing
 │   ├── bouns.js                ← LeetCode: Longest Common Prefix
 │   └── users.json              ← JSON file database for Express CRUD API
 │
 ├── Assignment5/
 │   ├── assignment5.pdf         ← Assignment 5 questions
-│   ├── musicana_erd.pdf        ← Part 1: Musicana Records ERD diagram
-│   └── user_product_schema.pdf ← Part 2: User–Product schema mapping
+│   ├── musicana-erd.png        ← Part 1: Musicana Records ERD diagram
+│   └── user-product-schema.png ← Part 2: User–Product schema mapping
+│
+├── Assignment6/
+│   ├── assignment6.js          ← Node.js + MySQL retail store queries
+│   ├── musicana-erd.png        ← Part 1: Musicana Records ERD diagram
+│   ├── user-product-schema.png ← Part 2: User–Product schema mapping
+│   ├── assignment6.pdf         ← Assignment 6 questions
+│   └── bouns.js                ← LeetCode: Customer Who Visited but Did Not Make Any Transactions
 │
 ├── .gitignore
 └── README.md
@@ -182,25 +189,14 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ### Part 2 – ERD Diagram (Musicana Records)
 
-**Entities:**
-
 | Entity | Attributes |
 |--------|-----------|
 | `MUSICIAN` | `musician_id` (PK), `name`, `street`, `city`, `phone` |
 | `INSTRUMENT` | `instrument_id` (PK), `name`, `musical_key` |
 | `ALBUM` | `album_id` (PK), `title`, `copyright_date`, `producer_id` (FK) |
 | `SONG` | `song_id` (PK), `title`, `author`, `album_id` (FK) |
-| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) — junction table |
-| `PERFORMS` | `musician_id` (FK), `song_id` (FK) — junction table |
-
-**Relationships:**
-
-| Relationship | Cardinality |
-|---|---|
-| Musician ↔ Instrument | Many-to-Many (via `PLAYS`) |
-| Musician ↔ Song | Many-to-Many (via `PERFORMS`) |
-| Album → Song | One-to-Many |
-| Musician → Album | One-to-Many (producer) |
+| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) |
+| `PERFORMS` | `musician_id` (FK), `song_id` (FK) |
 
 ### Bonus – `Assignment4/bouns.js`
 
@@ -212,33 +208,16 @@ Each assignment lives in its own folder and contains two files: the main solutio
 
 ### Part 1 – Musicana Records ERD
 
-Same Musicana Records requirements as Assignment 4 Part 2.
-
-**Entities and relationships:**
-
 | Entity | Attributes |
 |--------|-----------|
 | `MUSICIAN` | `musician_id` (PK), `name`, `street`, `city`, `phone` |
 | `INSTRUMENT` | `instrument_id` (PK), `name`, `musical_key` |
 | `ALBUM` | `album_id` (PK), `title`, `copyright_date`, `producer_id` (FK → MUSICIAN) |
 | `SONG` | `song_id` (PK), `title`, `author`, `album_id` (FK → ALBUM) |
-| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) — junction table (M:N) |
-| `PERFORMS` | `musician_id` (FK), `song_id` (FK) — junction table (M:N) |
-
-| Relationship | Cardinality | Rule |
-|---|---|---|
-| Musician ↔ Instrument | Many-to-Many | A musician plays many instruments; an instrument is played by many musicians |
-| Musician ↔ Song | Many-to-Many | A song is performed by one or more musicians; a musician may perform many songs |
-| Album → Song | One-to-Many | An album has many songs; a song belongs to exactly one album |
-| Musician → Album | One-to-Many | A producer produces many albums; each album has exactly one producer |
-
----
+| `PLAYS` | `musician_id` (FK), `instrument_id` (FK) — M:N junction table |
+| `PERFORMS` | `musician_id` (FK), `song_id` (FK) — M:N junction table |
 
 ### Part 2 – Schema Mapping (User → Own → Product)
-
-**ERD:** One User owns many Products (1:N relationship — FK lives on the Product side)
-
-#### Relational Schema
 
 ```sql
 USER (
@@ -263,14 +242,53 @@ PRODUCT (
 );
 ```
 
-**Mapping decisions:**
+---
 
-| Decision | Reason |
-|---|---|
-| FK `user_id` placed in `PRODUCT` | The relationship is 1:N — the "many" side (Product) holds the FK |
-| `userName` and `email` are `UNIQUE` | They were underlined in the original ERD (candidate keys) |
-| `isDeleted` defaults to `FALSE` | Soft-delete pattern — records are flagged, not physically removed |
-| No junction table needed | 1:N relationships map directly with a FK, no extra table required |
+## 📝 Assignment 6 – Node.js + MySQL
+
+**File:** `Assignment6/assignment6.js`  
+**Setup:** `npm install mysql2` inside the Assignment6 folder
+
+### Part 1 – Musicana Records ERD
+Same ERD as Assignment 5 Part 1.
+
+### Part 2 – Schema Mapping
+Same schema mapping as Assignment 5 Part 2.
+
+### Part 3 – MySQL Queries (16 Tasks)
+
+#### Database Schema
+
+| Table | Columns |
+|-------|---------|
+| `Suppliers` | `SupplierID` (PK, AI), `SupplierName` (TEXT), `ContactNumber` (TEXT → VARCHAR(15)) |
+| `Products` | `ProductID` (PK, AI), `ProductName` (TEXT NOT NULL), `Price` (DECIMAL), `StockQuantity` (INT), `SupplierID` (FK) |
+| `Sales` | `SaleID` (PK, AI), `ProductID` (FK), `QuantitySold` (INT), `SaleDate` (DATE) |
+
+#### Query Tasks
+
+| # | Type | Task |
+|---|------|------|
+| 1 | DDL | Create `Suppliers`, `Products`, `Sales` tables with FK constraints |
+| 2 | DDL | `ALTER TABLE Products ADD COLUMN Category TEXT` |
+| 3 | DDL | `ALTER TABLE Products DROP COLUMN Category` |
+| 4 | DDL | `ALTER TABLE Suppliers MODIFY COLUMN ContactNumber VARCHAR(15)` |
+| 5 | DDL | `ALTER TABLE Products MODIFY COLUMN ProductName TEXT NOT NULL` |
+| 6 | DML | Insert supplier `FreshFoods`, insert `Milk`, `Bread`, `Eggs`, insert sale of 2 × Milk |
+| 7 | DML | `UPDATE Products SET Price = 25.00 WHERE ProductName = 'Bread'` |
+| 8 | DML | `DELETE FROM Products WHERE ProductName = 'Eggs'` |
+| 9 | DQL | Total quantity sold per product (`SUM` + `GROUP BY` + `JOIN`) |
+| 10 | DQL | Product with highest stock (`ORDER BY DESC LIMIT 1`) |
+| 11 | DQL | Suppliers starting with `'F'` (`LIKE 'F%'`) |
+| 12 | DQL | Products never sold (`LEFT JOIN … WHERE SaleID IS NULL`) |
+| 13 | DQL | All sales with product name and date (`JOIN`) |
+| 14 | DCL | Create user `store_manager` with `SELECT`, `INSERT`, `UPDATE` on all tables |
+| 15 | DCL | `REVOKE UPDATE` from `store_manager` |
+| 16 | DCL | `GRANT DELETE` on `Sales` only to `store_manager` |
+
+### Bonus – `Assignment6/bouns.txt`
+
+**LeetCode Problem:** [Customer Who Visited but Did Not Make Any Transactions](https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/)
 
 ---
 
@@ -289,7 +307,13 @@ node Assignment2/assignment2.js
 node Assignment3/assignment3.js
 
 # Run Assignment 4 – Express Server
-cd Assignment4 && npm i && node assignment4.js
+cd Assignment4 && npm install express && node assignment4.js
+
+# Run Assignment 6 – MySQL queries
+cd Assignment6
+npm install mysql2
+# Update the db password in assignment6.js first, then:
+node assignment6.js
 ```
 
 **Test the Assignment 4 API with curl:**
@@ -316,5 +340,6 @@ curl -X DELETE http://localhost:3000/user/1
 - **Runtime:** Node.js
 - **Language:** JavaScript (ES6+)
 - **Framework:** Express.js (Assignment 4)
-- **Database design:** ERD + Relational Schema (Assignment 5)
+- **Database:** MySQL + `mysql2` package (Assignment 6)
+- **Database design:** ERD + Relational Schema (Assignments 5 & 6)
 - **Modules:** `path` · `fs` · `events` · `os` · `http` · `stream` · `zlib`
