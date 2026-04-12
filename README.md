@@ -47,7 +47,7 @@ Each assignment lives in its own folder and contains two files: the main solutio
 │   ├── musicana-erd.png        ← Part 1: Musicana Records ERD diagram
 │   ├── user-product-schema.png ← Part 2: User–Product schema mapping
 │   ├── assignment6.pdf         ← Assignment 6 questions
-│   └── bouns.js                ← LeetCode: Customer Who Visited but Did Not Make Any Transactions
+│   └── bouns.sql                ← LeetCode: Customer Who Visited but Did Not Make Any Transactions
 │
 ├── .gitignore
 └── README.md
@@ -286,7 +286,7 @@ Same schema mapping as Assignment 5 Part 2.
 | 15 | DCL | `REVOKE UPDATE` from `store_manager` |
 | 16 | DCL | `GRANT DELETE` on `Sales` only to `store_manager` |
 
-### Bonus – `Assignment6/bouns.txt`
+### Bonus – `Assignment6/bouns.sql`
 
 **LeetCode Problem:** [Customer Who Visited but Did Not Make Any Transactions](https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/)
 
