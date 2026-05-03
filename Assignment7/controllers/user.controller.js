@@ -3,6 +3,11 @@ const User = require("../models/user.model");
 const signup = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
+        if (!name || !email || !password)
+            return res.status(400).json({ message: "Name, email, and password are required." });
+
+        if (name === "" || email === "" || role === "")
+            return res.status(400).json({ message: "Name, email, and role cannot be empty." });
 
         const existing = await User.findOne({ where: { email } });
         if (existing)
@@ -59,6 +64,8 @@ const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email, role } = req.body;
+        if (name === "" || email === "" || role === "")
+            return res.status(400).json({ message: "Name, email, and role cannot be empty." });
 
         const existing = await User.findOne({ where: { email } });
         if (existing && existing.id !== parseInt(id))
