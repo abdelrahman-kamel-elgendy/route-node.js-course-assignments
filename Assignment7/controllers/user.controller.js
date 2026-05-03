@@ -23,29 +23,6 @@ const signup = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ where: { email } });
-        if (!user)
-            return res.status(404).json({ message: "Email not exists." });
-
-        if (user.password !== password)
-            return res.status(401).json({ message: "Incorrect password." });
-
-        res.status(200).json({ message: "Login successful." });
-
-    } catch (err) {
-        if (err.name === "SequelizeValidationError")
-            return res.status(400).json({
-                message: err.errors.map((e) => e.message).join(", "),
-            });
-
-        res.status(500).json({ message: err.message });
-    }
-};
-
 const getUserByEmail = async (req, res) => {
     try {
         const { email } = req.query;
@@ -78,18 +55,6 @@ const getUserById = async (req, res) => {
     }
 };
 
-const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.findAll({
-            attributes: { exclude: ["password", "role"] },
-        });
-
-        res.status(200).json(users);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -110,17 +75,4 @@ const updateUser = async (req, res) => {
     }
 };
 
-const deleteUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deleted = await User.destroy({ where: { id } });
-        if (!deleted)
-            return res.status(404).json({ message: "no user found" });
-
-        res.status(200).json({ message: "User deleted successfully." });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-module.exports = { signup, login, getUserByEmail, getUserById, getAllUsers, updateUser, deleteUser };
+module.exports = { signup, getUserByEmail, getUserById, updateUser };
