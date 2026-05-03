@@ -67,9 +67,11 @@ const updateUser = async (req, res) => {
         if (name === "" || email === "" || role === "")
             return res.status(400).json({ message: "Name, email, and role cannot be empty." });
 
-        const existing = await User.findOne({ where: { email } });
-        if (existing && existing.id !== parseInt(id))
-            return res.status(409).json({ message: "Email already exists." });
+        if (email) {
+            const existing = await User.findOne({ where: { email } });
+            if (existing && existing.id !== parseInt(id))
+                return res.status(409).json({ message: "Email already exists." });
+        }
 
         await User.upsert(
             { id, name, email, role },
