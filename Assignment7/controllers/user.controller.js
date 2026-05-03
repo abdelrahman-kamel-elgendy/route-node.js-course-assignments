@@ -50,7 +50,10 @@ const getUserByEmail = async (req, res) => {
     try {
         const { email } = req.query;
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({
+            where: { email },
+            attributes: { exclude: ["password", "role"] },
+        });
         if (!user)
             return res.status(404).json({ message: "no user found" });
 
@@ -60,4 +63,52 @@ const getUserByEmail = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, getUserByEmail };
+const getUserById = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id, {
+            attributes: { exclude: ["password", "role"] },
+        });
+
+        if (!user)
+            return res.status(404).json({ message: "no user found" });
+
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, role } = req.body;
+
+        const existing = await User.findOne({ where: { email } });
+        if (existing && existing.id !== parseInt(id))
+            return res.status(409).json({ message: "Email already exists." });
+
+        await User.upsert(
+            { id, name, email, role },
+            { validate: false }
+        );
+
+        res.status(200).json({ message: "User updated successfully." });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await User.destroy({ where: { id } });
+        if (!deleted)
+            return res.status(404).json({ message: "no user found" });
+
+        res.status(200).json({ message: "User deleted successfully." });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { signup, login, getUserByEmail, getUserById, updateUser, deleteUser };
