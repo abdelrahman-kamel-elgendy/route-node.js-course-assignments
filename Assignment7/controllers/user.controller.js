@@ -78,6 +78,18 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ["password", "role"] },
+        });
+
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -111,4 +123,4 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, getUserByEmail, getUserById, updateUser, deleteUser };
+module.exports = { signup, login, getUserByEmail, getUserById, getAllUsers, updateUser, deleteUser };
