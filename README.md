@@ -47,7 +47,28 @@ Each assignment lives in its own folder and contains two files: the main solutio
 │   ├── musicana-erd.png        ← Part 1: Musicana Records ERD diagram
 │   ├── user-product-schema.png ← Part 2: User–Product schema mapping
 │   ├── assignment6.pdf         ← Assignment 6 questions
-│   └── bouns.sql                ← LeetCode: Customer Who Visited but Did Not Make Any Transactions
+│   └── bouns.sql               ← LeetCode: Customer Who Visited but Did Not Make Any Transactions
+│
+├── Assignment7/
+│   ├── configs/
+│   │   └── database.js         ← Sequelize MySQL connection
+│   ├── models/
+│   │   ├── user.model.js       ← User model (define)
+│   │   ├── post.model.js       ← Post model (init + paranoid)
+│   │   ├── comment.model.js    ← Comment model (init)
+│   │   └── index.js            ← Associations (hasMany / belongsTo)
+│   ├── controllers/
+│   │   ├── user.controller.js    ← User business logic
+│   │   ├── post.controller.js    ← Post business logic
+│   │   └── comment.controller.js ← Comment business logic
+│   ├── routes/
+│   │   ├── user.routes.js      ← /users routes
+│   │   ├── post.routes.js      ← /posts routes
+│   │   └── comment.routes.js   ← /comments routes
+│   ├── index.js                ← Express app entry point
+│   ├── assignment7.pdf         ← Assignment 7 questions
+│   ├── Assignment7.postman_collection.json ← Postman collection
+│   └── bouns.js                ← LeetCode: Remove Element
 │
 ├── .gitignore
 └── README.md
@@ -292,6 +313,65 @@ Same schema mapping as Assignment 5 Part 2.
 
 ---
 
+## 📝 Assignment 7 – Sequelize ORM + Express.js
+
+**Entry point:** `Assignment7/index.js`  
+**Setup:** `npm install express sequelize mysql2`  
+**Postman Collection:** `Assignment7/Assignment7.postman_collection.json`
+
+### Part 1 – Models
+
+| Model | Defined With | Key Features |
+|-------|-------------|-------------|
+| `User` | `sequelize.define()` | email validation (`isEmail`), custom `checkPasswordLength` validator, `beforeCreate` hook for `checkNameLength` |
+| `Post` | `Model.init()` | `paranoid: true` (soft-delete), FK → Users |
+| `Comment` | `Model.init()` | FK → Posts, FK → Users |
+
+**Associations:**
+
+| Relationship | Cardinality |
+|---|---|
+| User → Post | One-to-Many |
+| Post → Comment | One-to-Many |
+| User → Comment | One-to-Many |
+
+### Part 2 – APIs
+
+#### A – User APIs (`/users`)
+
+| # | Method | URL | Description | Sequelize Method |
+|---|--------|-----|-------------|-----------------|
+| 1 | `POST` | `/users/signup` | Create user, check duplicate email, handle validation errors | `build()` + `save()` |
+| 2 | `PUT` | `/users/:id` | Create or update by PK, skip validation | `upsert()` |
+| 3 | `GET` | `/users/by-email?email=` | Find user by email | `findOne()` |
+| 4 | `GET` | `/users/:id` | Get user by PK, exclude `role` field | `findByPk()` + `attributes: { exclude }` |
+
+#### B – Post APIs (`/posts`)
+
+| # | Method | URL | Description | Sequelize Method |
+|---|--------|-----|-------------|-----------------|
+| 1 | `POST` | `/posts` | Create post | `new Post()` + `save()` |
+| 2 | `DELETE` | `/posts/:postId` | Soft-delete post (owner only) | `destroy()` |
+| 3 | `GET` | `/posts/details` | All posts with user (id, name) and comments (id, content) | `findAll()` + `include` |
+| 4 | `GET` | `/posts/comment-count` | All posts with comment count | `findAll()` + `fn('COUNT')` |
+
+#### C – Comment APIs (`/comments`)
+
+| # | Method | URL | Description | Sequelize Method |
+|---|--------|-----|-------------|-----------------|
+| 1 | `POST` | `/comments` | Bulk create comments | `bulkCreate()` |
+| 2 | `PATCH` | `/comments/:commentId` | Update comment content (owner only) | `findByPk()` + `save()` |
+| 3 | `POST` | `/comments/find-or-create` | Find or create by postId, userId, content | `findOrCreate()` |
+| 4 | `GET` | `/comments/search?word=` | Search comments by word, return count | `findAndCountAll()` + `Op.like` |
+| 5 | `GET` | `/comments/newest/:postId` | 3 most recent comments for a post | `findAll()` + `order` + `limit: 3` |
+| 6 | `GET` | `/comments/details/:id` | Comment by PK with user and post info | `findByPk()` + `include` |
+
+### Bonus – `Assignment7/bouns.js`
+
+**LeetCode Problem:** [Remove Element](https://leetcode.com/problems/remove-element/)
+
+---
+
 ## 🚀 How to Run
 
 Make sure you have [Node.js](https://nodejs.org/) installed.
@@ -310,27 +390,42 @@ node Assignment3/assignment3.js
 cd Assignment4 && npm install express && node assignment4.js
 
 # Run Assignment 6 – MySQL queries
-cd Assignment6
-npm install mysql2
+cd Assignment6 && npm install mysql2
 # Update the db password in assignment6.js first, then:
 node assignment6.js
+
+# Run Assignment 7 – Sequelize + Express
+cd Assignment7 && npm install express sequelize mysql2
+# Update db credentials in db/connection.js, then:
+node index.js
 ```
 
-**Test the Assignment 4 API with curl:**
+**Test the Assignment 7 API with curl:**
 
 ```bash
-curl -X POST http://localhost:3000/user \
+# Signup
+curl -X POST http://localhost:3000/users/signup \
   -H "Content-Type: application/json" \
-  -d '{"name":"Ahmed","age":27,"email":"ahmed@email.com"}'
+  -d '{"name":"John","email":"john@example.com","password":"secret123","role":"user"}'
 
-curl http://localhost:3000/user
-curl "http://localhost:3000/user/getByName?name=Ahmed"
-curl "http://localhost:3000/user/filter?minAge=25"
-curl http://localhost:3000/user/1
-curl -X PATCH http://localhost:3000/user/1 \
+# Get user by email
+curl "http://localhost:3000/users/by-email?email=john@example.com"
+
+# Create post
+curl -X POST http://localhost:3000/posts \
   -H "Content-Type: application/json" \
-  -d '{"age":30}'
-curl -X DELETE http://localhost:3000/user/1
+  -d '{"title":"First Post","content":"Hello world","userId":1}'
+
+# Get all posts with details
+curl http://localhost:3000/posts/details
+
+# Bulk create comments
+curl -X POST http://localhost:3000/comments \
+  -H "Content-Type: application/json" \
+  -d '{"comments":[{"content":"Great post!","postId":1,"userId":1}]}'
+
+# Search comments
+curl "http://localhost:3000/comments/search?word=great"
 ```
 
 ---
@@ -339,7 +434,8 @@ curl -X DELETE http://localhost:3000/user/1
 
 - **Runtime:** Node.js
 - **Language:** JavaScript (ES6+)
-- **Framework:** Express.js (Assignment 4)
-- **Database:** MySQL + `mysql2` package (Assignment 6)
+- **Framework:** Express.js (Assignments 4, 7)
+- **ORM:** Sequelize (Assignment 7)
+- **Database:** MySQL + `mysql2` package (Assignments 6, 7)
 - **Database design:** ERD + Relational Schema (Assignments 5 & 6)
 - **Modules:** `path` · `fs` · `events` · `os` · `http` · `stream` · `zlib`
