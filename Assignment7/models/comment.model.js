@@ -13,12 +13,12 @@ module.exports = Comment.init(
 
         content: {
             type: DataTypes.TEXT,
-            required: true,
+            allowNull: false,
         },
 
         postId: {
             type: DataTypes.INTEGER,
-            required: true,
+            allowNull: false,
             references: {
                 model: "Posts",
                 key: "id"
@@ -27,7 +27,7 @@ module.exports = Comment.init(
 
         userId: {
             type: DataTypes.INTEGER,
-            required: true,
+            allowNull: false,
             references: {
                 model: "Users",
                 key: "id"
