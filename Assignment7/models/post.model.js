@@ -13,17 +13,18 @@ module.exports = Post.init(
 
         title: {
             type: DataTypes.STRING,
-            required: true,
+            allowNull: false,
         },
 
         content: {
             type: DataTypes.TEXT,
-            required: true,
+            allowNull: false,
+
         },
 
         userId: {
             type: DataTypes.INTEGER,
-            required: true,
+            allowNull: false,
             references: {
                 model: "Users",
                 key: "id"
