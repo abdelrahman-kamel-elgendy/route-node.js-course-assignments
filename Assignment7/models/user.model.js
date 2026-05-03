@@ -11,13 +11,14 @@ module.exports = sequelize.define("User",
 
         name: {
             type: DataTypes.STRING,
-            required: true,
+            allowNull: false,
 
         },
 
         email: {
             type: DataTypes.STRING,
             unique: true,
+            allowNull: false,
             validate: {
                 isEmail: true,
             },
@@ -25,6 +26,7 @@ module.exports = sequelize.define("User",
 
         password: {
             type: DataTypes.STRING,
+            allowNull: false,
             validate: {
                 checkPasswordLength(value) {
                     if (value.length <= 6)
@@ -41,7 +43,6 @@ module.exports = sequelize.define("User",
 
     {
         timestamps: true,
-
         hooks: {
             beforeCreate(user) {
                 if (user.name.length <= 2)
